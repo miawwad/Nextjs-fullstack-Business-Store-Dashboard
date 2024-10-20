@@ -86,3 +86,10 @@ export type InvoiceForm = {
   amount: number;
   status: 'pending' | 'paid';
 };
+
+export type Loan = {
+  personid: number;
+  fullname: string;
+  loancost: string;
+  address: string;
+};
