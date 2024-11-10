@@ -24,13 +24,6 @@ export default async function Page(
      // Get the row value from searchParams, defaulting to 1 if not defined
   const row = searchParams?.rowNum;
   const rowNum = Number(row) || 1;
-  
-  // const searchParams = useSearchParams(); // Update URL
-  // console.log(searchParams); // Update URL
-  // const query = searchParams.get("row"); // Update URL
-  // console.log(query); // Update URL
-  // const currentPage = Number(query) || 1;
-  // // const FilterLoan = await fetchFilteredLoans();
 
   return (
     <main>
