@@ -3,12 +3,23 @@ import clsx from 'clsx';
 import Image from 'next/image';
 import { lusitana } from '@/app/ui/fonts';
 import { Loan } from '@/app/lib/definitions';
+import { useSearchParams } from 'next/navigation';
+import { fetchFilteredLoans } from '@/app/lib/data';
 
 export default async function LatestLoans({
+  query,
+  currentPage,
   latestLoans,
+  rowNum,
 }: {
+  query: string;
+  currentPage: number;
   latestLoans: Loan[];
+  rowNum: number;
+  
 }) {
+  const loan = await fetchFilteredLoans(query, currentPage);
+
   return (
     <div className="flex w-full flex-col md:col-span-4">
       <h2 className={`${lusitana.className} mb-4 text-xl md:text-2xl`}>
@@ -18,7 +29,7 @@ export default async function LatestLoans({
         {/* NOTE: Uncomment this code in Chapter 7 */}
 
         <div className="bg-white px-6">
-          {latestLoans.map((Loan, i) => {
+          {loan.map((Loan, i) => {
             return (
               <div
                 key={Loan.personid}

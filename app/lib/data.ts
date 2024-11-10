@@ -142,6 +142,7 @@ export async function fetchInvoicesPages(query: string) {
 }
 
 export async function fetchInvoiceById(id: string) {
+  // noStore();
   try {
     const data = await sql<InvoiceForm>`
       SELECT
@@ -159,6 +160,7 @@ export async function fetchInvoiceById(id: string) {
       amount: invoice.amount / 100,
     }));
 
+    console.log(invoice);
     return invoice[0];
   } catch (error) {
     console.error('Database Error:', error);
@@ -222,16 +224,50 @@ export async function fetchLoans() {
     // Artificially delay a response for demo purposes.
     // Don't do this in production :)
 
-    // console.log('Fetching revenue data...');
-    // await new Promise((resolve) => setTimeout(resolve, 3000));
+    console.log('Fetching revenue data...');
+    await new Promise((resolve) => setTimeout(resolve, 3000));
 
-    const data = await sql<Loan>`SELECT * FROM Loans`;
+    const data = await sql<Loan>`SELECT * FROM Loans LIMIT 1`;
 
-    // console.log('Data fetch completed after 3 seconds.');
+    console.log('Data fetch completed after 3 seconds.');
 
     return data.rows;
   } catch (error) {
     console.error('Database Error:', error);
     throw new Error('Failed to fetch loan data.');
+  }
+}
+
+export async function fetchFilteredLoans(query: string, currentPage: number,){
+  const offset = (currentPage - 1) * 1;
+  try {
+    // Artificially delay a response for demo purposes.
+    // Don't do this in production :)
+
+    console.log("Fetching Services data...");
+    await new Promise((resolve) => setTimeout(resolve, 3000));
+
+    const data = await sql<Loan>`SELECT * FROM Loans LIMIT 1 OFFSET ${offset}`;
+
+    console.log("Data fetch completed after 3 seconds.");
+
+    return data.rows;
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch Loan data.");
+  }
+}
+
+export async function fetchLoansPages(query: string) {
+  try {
+    const count = await sql`SELECT COUNT(*)
+    FROM loans`
+  ;
+
+    const totalPages = Math.ceil(Number(count.rows[0].count) / 1);
+    return totalPages;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch total number of Loans.');
   }
 }

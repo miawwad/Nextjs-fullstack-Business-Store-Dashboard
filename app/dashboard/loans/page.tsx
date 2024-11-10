@@ -1,13 +1,36 @@
-import { Card } from '@/app/ui/dashboard/cards';
-import RevenueChart from '@/app/ui/dashboard/revenue-chart';
-import LatestInvoices from '@/app/ui/dashboard/latest-invoices';
 import { lusitana } from '@/app/ui/fonts';
-import { fetchLoans } from '@/app/lib/data';
+import { fetchLoans, fetchLoansPages, fetchFilteredLoans } from '@/app/lib/data';
 import LatestLoans from '@/app/ui/loans/taken-loans';
+import { Suspense } from 'react';
+import { LatestLoansSkeleton } from '@/app/ui/skeletons';
+import Pagination from '@/app/ui/loans/pagination';
+import { useSearchParams } from 'next/navigation';
 
-export default async function Page() {
+export default async function Page(
+  props: {
+    searchParams?: Promise<{
+      query?: string;
+      page?: string;
+      rowNum?: string;
+    }>;
+  }
+) {
+    const searchParams = await props.searchParams;
+    const query = searchParams?.query || '';
+    const currentPage = Number(searchParams?.page) || 1;
+    const totalPages = await fetchLoansPages(query);
+    
+
+     // Get the row value from searchParams, defaulting to 1 if not defined
+  const row = searchParams?.rowNum;
+  const rowNum = Number(row) || 1;
   
-  const loan = await fetchLoans();
+  // const searchParams = useSearchParams(); // Update URL
+  // console.log(searchParams); // Update URL
+  // const query = searchParams.get("row"); // Update URL
+  // console.log(query); // Update URL
+  // const currentPage = Number(query) || 1;
+  // // const FilterLoan = await fetchFilteredLoans();
 
   return (
     <main>
@@ -15,19 +38,23 @@ export default async function Page() {
         Loans & Legs to break
       </h1>
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        {/* <Card title="Collected" value={totalPaidInvoices} type="collected" />
-        <Card title="Pending" value={totalPendingInvoices} type="pending" />
-        <Card title="Total Invoices" value={numberOfInvoices} type="invoices" />
-        <Card
-          title="Total Customers"
-          value={numberOfCustomers}
-          type="customers"
-        /> */}
-
+     
+      <Suspense key={query + currentPage} fallback={<LatestLoansSkeleton />}>
+      <LatestLoans query={query}  currentPage={currentPage} />
+      </Suspense>
+      </div >
+      <div className="mt-5 flex w-full justify-center">
+        <Pagination totalPages={totalPages} />
       </div>
-      <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-4 lg:grid-cols-8">
+
+      {/* <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-4 lg:grid-cols-8">
         
-        <LatestLoans latestLoans={loan} />
+        <Suspense key={query + currentPage}>
+        <Table query={query} currentPage={currentPage} />
+      </Suspense>
+      </div> */}
+      
+      <div className="mt-5 flex w-full justify-center">
       </div>
     </main>
   );
