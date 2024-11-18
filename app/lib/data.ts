@@ -6,7 +6,8 @@ import {
   InvoicesTable,
   LatestInvoiceRaw,
   Revenue,
-  Loan
+  Loan,
+  LoanersField
 } from './definitions';
 import { formatCurrency } from './utils';
 
@@ -269,5 +270,24 @@ export async function fetchLoansPages(query: string) {
   } catch (error) {
     console.error('Database Error:', error);
     throw new Error('Failed to fetch total number of Loans.');
+  }
+}
+
+export async function fetchLoaners() {
+  try {
+    const data = await sql<LoanersField>`
+      SELECT
+        personid,
+        fullname
+        
+      FROM Loans
+      ORDER BY fullname ASC
+    `;
+
+    const customers = data.rows;
+    return customers;
+  } catch (err) {
+    console.error('Database Error:', err);
+    throw new Error('Failed to fetch all customers.');
   }
 }

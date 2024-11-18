@@ -5,6 +5,7 @@ import { Suspense } from 'react';
 import { LatestLoansSkeleton } from '@/app/ui/skeletons';
 import Pagination from '@/app/ui/loans/pagination';
 import { useSearchParams } from 'next/navigation';
+import { CreateLoan } from '@/app/ui/invoices/buttons';
 
 export default async function Page(
   props: {
@@ -30,6 +31,9 @@ export default async function Page(
       <h1 className={`${lusitana.className} mb-4 text-xl md:text-2xl`}>
         Loans & Legs to break
       </h1>
+      <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
+        <CreateLoan/>
+      </div>
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
      
       <Suspense key={query + currentPage} fallback={<LatestLoansSkeleton />}>

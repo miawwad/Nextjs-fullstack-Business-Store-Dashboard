@@ -75,3 +75,41 @@ export async function deleteInvoice(id: string) {
     return {message: 'Database Error: Failed to Delete Invoice.'};
   }
 }
+//---------------------------
+const FormSchema1 = z.object({
+  personid: z.coerce.number(),
+  fullname: z.string(),
+  loancost: z.string(),
+  address: z.string(),
+});
+
+const CreateLoan = FormSchema1.omit({ personid: true });
+
+export async function createLoan(formData: FormData) {
+  // console.log('createLoan');
+    const { fullname, loancost, address } = CreateLoan.parse({
+        fullname: formData.get('fullname'),
+        loancost: formData.get('loancost'),
+        address: formData.get('address'),
+      });
+      // Test it out:
+      // console.log(rawFormData);
+    //   console.log(typeof rawFormData.amount);
+    // const amountInCents = loancost * 100;
+    // const personid = new Date().toISOString().split('T')[0];
+    try{
+      
+      await sql`
+      INSERT INTO Loans (fullname, loancost, address)
+      VALUES (${fullname}, ${loancost}, ${address})
+      `;
+
+    }catch(error){
+      return{
+        message: 'Database Error: Failed to Create Invoice.',
+      };
+    }
+    
+  revalidatePath('/dashboard/loans');
+  redirect('/dashboard/loans');
+}

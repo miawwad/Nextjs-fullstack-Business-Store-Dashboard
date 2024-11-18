@@ -93,3 +93,9 @@ export type Loan = {
   loancost: string;
   address: string;
 };
+
+export type LoanersField = {
+  personid: number;
+  fullname: string;
+  // address: string;
+};
