@@ -6,18 +6,7 @@ import { Loan } from '@/app/lib/definitions';
 import { useSearchParams } from 'next/navigation';
 import { fetchFilteredLoans } from '@/app/lib/data';
 
-export default async function LatestLoans({
-  query,
-  currentPage,
-  latestLoans,
-  rowNum,
-}: {
-  query: string;
-  currentPage: number;
-  latestLoans: Loan[];
-  rowNum: number;
-  
-}) {
+export default async function LatestLoans({query, currentPage}: {query: string; currentPage: number;}) {
   const loan = await fetchFilteredLoans(query, currentPage);
 
   return (
